@@ -13,7 +13,7 @@ git clone https://github.com/cryptokylin/eos_contract_test.git
 
 cd eos_contract_test
 
-npm install
+yarn install
 ```
 
 ### config

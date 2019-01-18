@@ -1,6 +1,6 @@
 {
   "name": "test_case",
-  "version": "1.1",
+  "version": "1.1.0",
   "description": "eos contract test",
   "main": "app.js",
   "scripts": {
