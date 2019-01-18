@@ -9,6 +9,12 @@ config = {
   // --- eosio bin folder (after make install)
   EOSIO_BIN: '/usr/local/eosio/bin/',
 
+  // --- eosio.cdt bin folder (after make install)
+  EOSIO_CDT_BIN: '/usr/local/eosio.cdt/',
+  
+  // --- contracts folder
+  // CONTRACTS_FOLDER: '',
+  
   // --- wallet
   WALLET_NAME: 'localtest',
   WALLET_PASS: 'PW5J7qvXT2CWxGHZ6dDxJxRe5DqXgJ7PcWHZgQp9u5GmQWn3RkWYs',

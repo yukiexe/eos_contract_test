@@ -6,7 +6,7 @@ const config = require('./config');
 // ----------------------------------------------------
 // constants
 CLEOS = config.EOSIO_BIN + 'cleos --wallet-url ' + config.WALLET_URL + ' -u ' + config.NODEOS_URL;
-EOSIOCPP = config.EOSIO_BIN + 'eosiocpp';
+EOSIOCPP = 'eosio-cpp';
 EOSIO2WASM = config.EOSIO_BIN + 'eosio-wast2wasm';
 
 CORE_SYMBOL_NAME = config.CORE_SYMBOL_NAME;
@@ -126,14 +126,14 @@ deployCustomContracts = function() {
 }
 
 buildContract = function(contract, folder) {
-  shell.cd(folder + contract);
-  console.log('building ' + contract + '.wast ...');
-  cmdline = EOSIOCPP + ' -o ' + contract + '.wast ' + contract + '.cpp';
+  shell.cd(folder + '/EOS/'+ contract);
+  console.log('building ' + contract + '.wasm, '+ contract + '.abi ...');
+  cmdline = EOSIOCPP + ' ' + contract + '.cpp' + ' -o ' + contract + '.wasm --abigen';
   ret = shell.exec(cmdline,  {silent: true});
   if (ret.code != 0) {
     console.log('\033[31m<Error>\033[0m', ret.stderr);
   }
-
+  /*
   console.log('building ' + contract + '.abi ...');
   cmdline = EOSIOCPP + ' -g ' + contract + '.abi ' + contract + '.cpp';
   ret = shell.exec(cmdline,  {silent: true});
@@ -146,7 +146,7 @@ buildContract = function(contract, folder) {
   ret = shell.exec(cmdline,  {silent: true});
   if (ret.code != 0) {
     console.log('\033[31m<Error>\033[0m', ret.stderr);
-  }
+  }*/
 }
 
 buildCustomContracts = function() {
