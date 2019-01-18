@@ -40,6 +40,7 @@ function parseArgs() {
   var loadname;
   var buildContracts;
   var noDeploy;
+  var devTest;
 
   if (argv.length > 3) {
     argv = argv.slice(3);
@@ -66,6 +67,10 @@ function parseArgs() {
         console.log(cmdFormat);
         process.exit(0);
       }
+      else if (argv[i] == '":dev-test"' || argv[i] == '":dt"') {
+        devTest = true;
+        i++;
+      }
       else {
         invalidArgsExit();
       }
@@ -77,6 +82,7 @@ function parseArgs() {
     loadname: loadname,
     bc: buildContracts,
     nd: noDeploy,
+    dt: devTest,
   }
 }
 
@@ -85,6 +91,12 @@ function parseArgs() {
 // ----------------------------------------------------
 args = parseArgs();
 chain = require('./chain');
+if ( args.dt ) {
+  printDiv('only building contracts ...');
+  chain.buildCustomContracts();
+
+  process.exit(0);
+}
 printDiv('start booting chain ...', false);
 
 // boot from snapped data if any
