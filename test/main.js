@@ -41,6 +41,7 @@ function parseArgs() {
   var buildContracts;
   var noDeploy;
   var devTest;
+  var testnetTest;
 
   if (argv.length > 3) {
     argv = argv.slice(3);
@@ -71,6 +72,10 @@ function parseArgs() {
         devTest = true;
         i++;
       }
+      else if (argv[i] == '":testnet-test"' || argv[i] == '":tt"') {
+        testnetTest = true;
+        i++;
+      }
       else {
         invalidArgsExit();
       }
@@ -83,6 +88,7 @@ function parseArgs() {
     bc: buildContracts,
     nd: noDeploy,
     dt: devTest,
+    tt: testnetTest,
   }
 }
 
@@ -97,32 +103,50 @@ if ( args.dt ) {
 
   process.exit(0);
 }
-printDiv('start booting chain ...', false);
 
-// boot from snapped data if any
-chain.boot(args.loadname);
+if (args.tt) {
+  printDiv('start testnet test ...');
+  chain.unlockWallet();
 
-// create contract accounts if fresh new chain booted
-// then snap the chain if snapname provided
-if (!args.loadname) {
-  // create contract accounts
-  printDiv('creating custome contract owner accounts (their keys already imported into wallet) ...');
-  chain.createCustomContractAccounts();
+  // build contract if required
+  if (args.bc) {
+    printDiv('building contracts ...');
+    chain.buildCustomContracts();
+  }
 
-  // try snapshot chain data, do nothing if args.snapname not defined
-  chain.snapshotChainData(args.snapname);
+  // deploy custom contracts if no-deploy missed
+  if (!args.nd) {
+    printDiv('deploying contracts ...');
+    chain.deployCustomContractsOnTestnet();
+  }
 }
+else {
+  // boot from snapped data if any
+  printDiv('start booting chain ...', false);
+  chain.boot(args.loadname);
 
-// build contract if required
-if (args.bc) {
-  printDiv('building contracts ...');
-  chain.buildCustomContracts();
-}
+  // create contract accounts if fresh new chain booted
+  // then snap the chain if snapname provided
+  if (!args.loadname) {
+    // create contract accounts
+    printDiv('creating custome contract owner accounts (their keys already imported into wallet) ...');
+    chain.createCustomContractAccounts();
 
-// deploy custom contracts if no-deploy missed
-if (!args.nd) {
-  printDiv('deploying contracts ...');
-  chain.deployCustomContracts();
+    // try snapshot chain data, do nothing if args.snapname not defined
+    chain.snapshotChainData(args.snapname);
+  }
+
+  // build contract if required
+  if (args.bc) {
+    printDiv('building contracts ...');
+    chain.buildCustomContracts();
+  }
+
+  // deploy custom contracts if no-deploy missed
+  if (!args.nd) {
+    printDiv('deploying contracts ...');
+    chain.deployCustomContracts(chain.CLEOS);
+  }
 }
 
 // setup eosjs -> run test

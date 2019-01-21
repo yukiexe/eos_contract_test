@@ -5,6 +5,7 @@ config = {
   // --- daemon url
   NODEOS_URL: 'http://127.0.0.1:8888',
   WALLET_URL: 'http://127.0.0.1:8900',
+  KYLIN_TESTNET_NODEOS_URL: 'https://api-kylin.eosasia.one',
 
   // --- eosio bin folder (after make install)
   EOSIO_BIN: '/usr/local/eosio/bin/',
@@ -13,11 +14,11 @@ config = {
   EOSIO_CDT_BIN: '/usr/local/eosio.cdt/',
   
   // --- contracts folder
-  // CONTRACTS_FOLDER: '',
+  // CONTRACTS_FOLDER: '/mnt/d/ruka/Documents/github/',
   
   // --- wallet
   WALLET_NAME: 'localtest',
-  WALLET_PASS: 'PW5J7qvXT2CWxGHZ6dDxJxRe5DqXgJ7PcWHZgQp9u5GmQWn3RkWYs',
+  WALLET_PASS: 'PW5J1hjPsWcfRLWmUQS5jYi5umZ1Hhx8MvRErLoEnUjhFRu8zfeiJ',
 
   // --- eosio.* account key, this key already imported into the localtest wallet
   //     the private key list here incase of use by eosjs api
@@ -78,9 +79,9 @@ config = {
   // --- custom contracts
   CUSTOM_CONTRACTS : [
     {
-      account: 'contract1111',
-      name:   'btc.token',
-      folder: __dirname + '/exampleContracts/',
+      account: 'ccctest22222',
+      name:   'cryptojinian',
+      folder: '/mnt/d/ruka/Documents/github/cryptocoin-contracts/EOS/',
     },
   ]
 }

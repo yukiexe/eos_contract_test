@@ -6,6 +6,8 @@ const config = require('./config');
 // ----------------------------------------------------
 // constants
 CLEOS = config.EOSIO_BIN + 'cleos --wallet-url ' + config.WALLET_URL + ' -u ' + config.NODEOS_URL;
+CLEOS_TESTNET = config.EOSIO_BIN + 'cleos --wallet-url ' + config.WALLET_URL + ' -u ' + config.KYLIN_TESTNET_NODEOS_URL;
+CLEOS_NO_URL = config.EOSIO_BIN + 'cleos --wallet-url ' + config.WALLET_URL ;
 EOSIOCPP = 'eosio-cpp';
 EOSIO2WASM = config.EOSIO_BIN + 'eosio-wast2wasm';
 
@@ -13,12 +15,15 @@ CORE_SYMBOL_NAME = config.CORE_SYMBOL_NAME;
 
 // ----------------------------------------------------
 // functions implemented by shell scripts
+
+// Wallet
 unlockWallet = function() {
   console.log('unlocking wallet ...');
   cmdline = CLEOS + ' wallet unlock -n ' + config.WALLET_NAME + ' --password ' + config.WALLET_PASS;
   shell.exec(cmdline, {silent: true});
 }
 
+//  Nodeo
 startNodeos = function() {
   console.log('starting nodeos ...');
   cmdline = '/usr/local/eosio/bin/nodeos --config-dir ' + __dirname + '/eosio/config' + ' --data-dir ' + __dirname + '/eosio/data &';
@@ -106,23 +111,28 @@ createCustomContractAccounts = function() {
   createAccounts(config.CONTRACT_ACCOUNTS);
 }
 
-setContract = function(account, contract, folder = config.SYS_CONTRACTS_FOLDER) {
-  cmdline = CLEOS + ' set contract ' + account + ' ' + folder + contract + ' -p ' + account;
+setContract = function(nodeos_url, account, contract, folder = config.SYS_CONTRACTS_FOLDER) {
+  cmdline = CLEOS_NO_URL + ' -u ' + nodeos_url + ' set contract ' + account + ' ' + folder + contract + ' -p ' + account;
+  // console.log(cmdline);
   ret = shell.exec(cmdline,  {silent: true});
   if (ret.code != 0) {
     console.log('\033[31m<Error>\033[0m', ret.stderr);
   }
 }
 
-deployContract = function(account, contractFullpath) {
-  setContract(account, contractFullpath, '');
+deployContract = function(cleos, account, contractFullpath) {
+  setContract(cleos, account, contractFullpath, '');
 }
 
-deployCustomContracts = function() {
+deployCustomContracts = function(nodeos_url = config.NODEOS_URL ) {
   config.CUSTOM_CONTRACTS.forEach( (contract) => {
     console.log('deploying contract:', contract.name);
-    setContract(contract.account, contract.name, contract.folder)
+    setContract(nodeos_url, contract.account, contract.name, contract.folder)
   });
+}
+
+deployCustomContractsOnTestnet = function() {
+  deployCustomContracts(config.KYLIN_TESTNET_NODEOS_URL);
 }
 
 buildContract = function(contract, folder) {
@@ -245,6 +255,7 @@ boot = function(snapname) {
 
 // --- exports
 module.exports.boot = boot;
+module.exports.unlockWallet = unlockWallet;
 
 module.exports.pushAction = pushAction;
 
@@ -256,6 +267,7 @@ module.exports.buildCustomContracts = buildCustomContracts;
 
 module.exports.deployContract = deployContract;
 module.exports.deployCustomContracts = deployCustomContracts;
+module.exports.deployCustomContractsOnTestnet = deployCustomContractsOnTestnet;
 
 module.exports.snapshotChainData = snapshotChainData;
 module.exports.loadChainData = loadChainData;
